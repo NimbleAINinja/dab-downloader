@@ -33,6 +33,7 @@ type Config struct {
 	VerifyDownloads     bool `json:"VerifyDownloads"` // Enable/disable download verification
 	MaxRetryAttempts    int  `json:"MaxRetryAttempts"` // Configurable retry attempts
 	WarningBehavior     string `json:"WarningBehavior"` // "immediate", "summary", or "silent"
+	InsecureSkipVerify  bool `json:"InsecureSkipVerify"` // Skip TLS certificate verification
 }
 
 // NamingOptions defines the configurable naming masks

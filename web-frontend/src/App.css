@@ -1,0 +1,133 @@
+/* DAB Music Downloader App Styles */
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Responsive Design Breakpoints */
+/* Mobile First Approach */
+
+/* Base styles for mobile (320px and up) */
+.app-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Header responsive styles */
+.app-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.app-header .container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.app-header .header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Main content responsive styles */
+.app-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.app-section {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Tablet styles (768px and up) */
+@media (min-width: 768px) {
+  .app-main {
+    padding: 2rem;
+  }
+  
+  .app-section {
+    padding: 2rem;
+  }
+  
+  .app-title {
+    font-size: 1.5rem;
+  }
+  
+  .app-header .container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Desktop styles (1024px and up) */
+@media (min-width: 1024px) {
+  .app-header .container {
+    padding: 0 2rem;
+  }
+  
+  .app-main {
+    padding: 2rem;
+  }
+}
+
+/* Large desktop styles (1280px and up) */
+@media (min-width: 1280px) {
+  .app-main {
+    padding: 2rem 0;
+  }
+}
+
+/* Loading and transition styles */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}

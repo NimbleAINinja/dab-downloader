@@ -5,3 +5,4 @@ dab-downloader-linux-amd64
 *.md
 !README.md
 verification_test.go
+.vscode

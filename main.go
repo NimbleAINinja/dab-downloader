@@ -578,6 +578,45 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+var serverCmd = &cobra.Command{
+	Use:   "server",
+	Short: "Start the web server mode for API access",
+	Long:  "Start the DAB downloader in web server mode, providing HTTP API endpoints for frontend applications.",
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get server configuration from flags
+		host, _ := cmd.Flags().GetString("host")
+		port, _ := cmd.Flags().GetString("port")
+		mode, _ := cmd.Flags().GetString("mode")
+		
+		serverConfig := &ServerConfig{
+			Host: host,
+			Port: port,
+			Mode: mode,
+		}
+		
+		// Create and initialize application in server mode
+		app := NewApplication()
+		if err := app.InitializeServerMode(serverConfig); err != nil {
+			colorError.Printf("❌ Failed to initialize server mode: %v\n", err)
+			os.Exit(1)
+		}
+		
+		// Validate environment
+		if err := app.ValidateEnvironment(); err != nil {
+			colorError.Printf("❌ Environment validation failed: %v\n", err)
+			os.Exit(1)
+		}
+		
+		colorInfo.Printf("🚀 Starting DAB Downloader Web Server v%s\n", toolVersion)
+		
+		// Run the application
+		if err := app.Run(args); err != nil {
+			colorError.Printf("❌ Server error: %v\n", err)
+			os.Exit(1)
+		}
+	},
+}
+
 func printInstallInstructions() {
 
     fmt.Println("\nðŸ“¦ Install FFmpeg:")
@@ -588,7 +627,69 @@ func printInstallInstructions() {
     fmt.Println("\nðŸ”„ Restart the application after installation")
 }
 
+// initConfigAndAPILegacy maintains backward compatibility for existing CLI commands
+func initConfigAndAPILegacy() (*Config, *DabAPI) {
+	// Use the new shared services approach
+	services, err := NewAppServices(ModeCLI)
+	if err != nil {
+		colorError.Printf("❌ Failed to initialize services: %v\n", err)
+		os.Exit(1)
+	}
+	
+	// Apply CLI flag overrides to config
+	config := services.GetConfig()
+	
+	// Command-line flags override config file
+	if apiURL != "" {
+		config.APIURL = apiURL
+	}
+	if downloadLocation != "" {
+		config.DownloadLocation = downloadLocation
+	}
+	if spotifyClientID != "" {
+		config.SpotifyClientID = spotifyClientID
+	}
+	if spotifyClientSecret != "" {
+		config.SpotifyClientSecret = spotifyClientSecret
+	}
+	if navidromeURL != "" {
+		config.NavidromeURL = navidromeURL
+	}
+	if navidromeUsername != "" {
+		config.NavidromeUsername = navidromeUsername
+	}
+	if navidromePassword != "" {
+		config.NavidromePassword = navidromePassword
+	}
+	if format != "flac" {
+		config.Format = format
+	}
+	if bitrate != "320" {
+		config.Bitrate = bitrate
+	}
+	if warningBehavior != "summary" {
+		config.WarningBehavior = warningBehavior
+	}
+	if insecure {
+		config.InsecureSkipVerify = insecure
+	}
+	
+	// Update services with modified config
+	if err := services.UpdateConfig(config); err != nil {
+		colorError.Printf("❌ Failed to update configuration: %v\n", err)
+		os.Exit(1)
+	}
+	
+	return config, services.DabAPI
+}
+
+// Legacy function name for backward compatibility
 func initConfigAndAPI() (*Config, *DabAPI) {
+	return initConfigAndAPILegacy()
+}
+
+// Original initConfigAndAPI implementation (now unused but kept for reference)
+func initConfigAndAPIOriginal() (*Config, *DabAPI) {
 	color.NoColor = !isTTY() // Initialize color output
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -759,6 +860,11 @@ func init() {
 	navidromeCmd.Flags().BoolVar(&expandNavidrome, "expand", false, "Expand playlist tracks to download the full albums")
 	navidromeCmd.Flags().BoolVar(&auto, "auto", false, "Automatically download the first result")
 
+	// Server command flags
+	serverCmd.Flags().String("host", "localhost", "Host to bind the server to")
+	serverCmd.Flags().String("port", "8080", "Port to bind the server to")
+	serverCmd.Flags().String("mode", "release", "Gin mode (debug, release, test)")
+
 	rootCmd.AddCommand(artistCmd)
 	rootCmd.AddCommand(albumCmd)
 	rootCmd.AddCommand(searchCmd)
@@ -766,6 +872,7 @@ func init() {
 	rootCmd.AddCommand(navidromeCmd)
 	rootCmd.AddCommand(addToPlaylistCmd)
 	rootCmd.AddCommand(debugCmd)
+	rootCmd.AddCommand(serverCmd)
 
 	debugCmd.AddCommand(testApiAvailabilityCmd)
 	debugCmd.AddCommand(testArtistEndpointsCmd)
