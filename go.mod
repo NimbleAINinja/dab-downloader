@@ -1,8 +1,6 @@
 module dab-downloader
 
-go 1.21
-
-toolchain go1.24.5
+go 1.25.0
 
 require (
 	github.com/cheggaaa/pb/v3 v3.1.7
@@ -32,8 +30,8 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	golang.org/x/net v0.23.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 )
